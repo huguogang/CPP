@@ -222,7 +222,7 @@ int _tmain(int argc, _TCHAR* argv[])
     clock_t c2 = clock();
     cout << "Total seconds: " << (c2 - c1)/CLOCKS_PER_SEC << endl;
     cout << "Loop count: " << loopCount << endl;
-    cout << "Max Match rule exclusion count: " << maxMatchCount << endl;
+    //cout << "Max Match rule exclusion count: " << maxMatchCount << endl;
     if (b) {
         for (int i = 0; i < nDigits; ++i) {
             cout << answer[i] << ", ";
