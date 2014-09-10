@@ -24,12 +24,36 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BigInteger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EulerProject.cpp">
+    <ClCompile Include="problem74.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="problem185.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="problem122.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="problem49.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BigInteger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="problem11.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="problem13.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="problem12.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
