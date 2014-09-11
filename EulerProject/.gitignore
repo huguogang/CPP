@@ -4,6 +4,8 @@ Release/
 ipch/
 *.suo
 *.sdf
+*.psess
+*.vsp
 
 # Windows image file caches
 Thumbs.db
