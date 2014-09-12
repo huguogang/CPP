@@ -1,6 +1,6 @@
-//current total run time: 12 sec
-//TODO: mirror symmetry, 50% perf
-//TODO: is there any light weight parallel library?
+//v1 total run time: 12 sec
+//v2: add mirror removal, run time: 6 sec
+//v2: adopt parallel_for: 1.4 sec (quad-core, hyper-thread, ~ 8 cores, 25% runtime)
 #include "stdafx.h"
 #include <stdio.h>
 #include <iostream>
@@ -11,7 +11,14 @@
 #include <string>
 #include <algorithm>
 #include <functional>
+#include <numeric>
+
+//these two are for parallel_for
+#include <ppl.h>
+#include <concurrent_vector.h>
+
 using namespace std;
+using namespace concurrency;
 
 //length of the string
 const int LEN = 15;
@@ -55,7 +62,7 @@ void processFold() {
             if (abs(val - (i + 1)) == 1 ||      //not a new bond
                 val == 0 ||                     //no element
                 val < i + 1                     //duplicated bond, only keep first < second bond
-                ) {                 
+                ) {
                 continue;
             }
             f.push_back(pair<int, int>(i + 1, val));
@@ -129,7 +136,7 @@ int countExistingBond(int protein) {
 int countNewBonds(int protein, const FOLD& fold) {
     int ret = 0;
     for (auto p = fold.begin(); p != fold.end(); p++) {
-        if ((protein & (1 << (p->first - 1))) == 0 && 
+        if ((protein & (1 << (p->first - 1))) == 0 &&
             (protein & (1 << (p->second - 1))) == 0) {
             ret++;
         }
@@ -141,7 +148,85 @@ int solve() {
     generateFolds();
     //bit rep of protein, 0: H, 1: P
     int sum = 0;
+    concurrent_vector<int> maxBond;
+    parallel_for(0, 1 << LEN,
+        [&](int i) {
+        int head = LEN - 1, tail = 0;
+        int mirrorFactor = 1; //2 if mirror exists, 1 applies for HHHH, or PPPP
+        while (head > tail) {
+            bool h = i & (1 << head);
+            bool t = i & (1 << tail);
+            if (h == t) {
+                //could be palindrome, then we can not rely on mirror
+                tail++;
+                head--;
+            }
+            else {
+                //head != tail, a mirror exists
+                if (h < t) {
+                    //we will calculate this one, and skip the other mirrored string
+                    mirrorFactor = 2;
+                }
+                else {
+                    return; //skip
+                }
+                break;
+            }
+        }
+
+        int maxNewBond = 0;
+        int fixed = countExistingBond(i);
+        int newBond;
+        for (auto fold = allFolds.begin(); fold != allFolds.end(); fold++) {
+            if (maxNewBond >= fold->size()) {
+                break; //impossible to beat the current best
+            }
+            newBond = countNewBonds(i, *fold);
+            maxNewBond = max(maxNewBond, newBond);
+            if (newBond == fold->size()) {
+                //all match, this is the best solution, because we search in order of number of new bonds
+                break;
+            }
+
+        }
+        maxBond.push_back((maxNewBond + fixed) * mirrorFactor);
+    });
+    sum = accumulate(maxBond.begin(), maxBond.end(), 0);
+    /* replaced by parallel_for
+    int nSkipped = 0;
+    int nPal = 0;
+
     for (int i = 0; i < (1 << LEN); i++) {
+        int head = LEN - 1, tail = 0;
+        int mirrorFactor = 1; //2 if mirror exists, 1 applies for HHHH, or PPPP
+        bool skip = false;
+        while (head > tail) {
+            bool h = i & (1 << head);
+            bool t = i & (1 << tail);
+            if (h == t) {
+                //could be palindrome, then we can not rely on mirror
+                tail++;
+                head--;
+            }
+            else {
+                //head != tail, a mirror exists
+                if (h < t) {
+                    //we will calculate this one, and skip the other mirrored string
+                    mirrorFactor = 2;
+                }
+                else {
+                    skip = true;
+                    nSkipped++;
+                }
+                break;
+            }
+        }
+        if (skip) {
+            continue;
+        }
+        if (mirrorFactor == 1) {
+            nPal++;
+        }
         int maxNewBond = 0;
         int fixed = countExistingBond(i);
         int newBond;
@@ -158,8 +243,11 @@ int solve() {
 
         }
 
-        sum += maxNewBond + fixed;
+        sum += (maxNewBond + fixed) * mirrorFactor;
     }
+    cout << "Skipped: " << nSkipped << endl;
+    cout << "Palindrome: " << nPal << endl;
+    */
     return sum;
 }
 
