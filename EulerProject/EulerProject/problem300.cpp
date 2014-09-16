@@ -17,7 +17,7 @@
 #include <numeric>
 
 //these two are for parallel_for
-#include <ppl.h>
+//#include <ppl.h>
 #include <concurrent_vector.h>
 
 using namespace std;
