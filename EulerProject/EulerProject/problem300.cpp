@@ -1,6 +1,9 @@
 //v1 total run time: 12 sec
 //v2: add mirror removal, run time: 6 sec
 //v2: adopt parallel_for: 1.4 sec (quad-core, hyper-thread, ~ 8 cores, 25% runtime)
+//A few other ideas from forum that should provide further improvements
+// * save new bond in the fold as bit masks (check new H bond will be faster)
+// * remove folds whose new bonds are strictly subset of another fold
 #include "stdafx.h"
 #include <stdio.h>
 #include <iostream>
@@ -250,7 +253,7 @@ int solve() {
     */
     return sum;
 }
-
+/*
 int _tmain(int argc, _TCHAR* argv[])
 {
     clock_t c1 = clock();
@@ -260,3 +263,4 @@ int _tmain(int argc, _TCHAR* argv[])
     cout << "Total seconds: " << (c2 - c1) * 1.0 / (CLOCKS_PER_SEC) << endl;
     return 0;
 }
+*/
