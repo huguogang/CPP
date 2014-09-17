@@ -6,6 +6,7 @@ ipch/
 *.sdf
 *.psess
 *.vsp
+*.opensdf
 
 # Windows image file caches
 Thumbs.db

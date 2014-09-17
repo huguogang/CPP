@@ -2,7 +2,6 @@
     // - problem 182    RSA encryption
     // - problem 186    connectedness of a network
     // - problem 252    convex holes
-    // - problem 287    quadtree encoding
     // - problem 400    fibonacci tree game
     //p 149 max sum subsequence
     //p 204 generalized hamming number
