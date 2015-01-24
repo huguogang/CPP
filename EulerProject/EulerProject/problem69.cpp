@@ -28,10 +28,19 @@ int solve() {
     return maxN;
 }
 
+//loop sum of 1 billion takes 0.25s on my laptop
+int test() {
+    int ret = 0;
+    for (int i = 0; i < 1000000000; i++) {
+        ret += i;
+    }
+    return ret;
+}
 int _tmain(int argc, _TCHAR* argv[])
-{
+{   
     clock_t c1 = clock();
     int ret = solve();
+    //int ret = test();
     cout << ret << endl;
     clock_t c2 = clock();
     cout << "Total seconds: " << (c2 - c1) * 1.0 / (CLOCKS_PER_SEC) << endl;
